@@ -73,16 +73,13 @@ Shader "Unlit/GridOverlayShader"
 
 				float minDist = min(distX, distY);
 
+				float GraduationMaxDistance = _LineThickness * _GraduationScaleFactor;
+
 				// Check if we are on a graduation line
 				bool isGraduationLine = false;
-				if (distX <= distY)
-				{
-					isGraduationLine = x % _GraduationStep == 0;
-				}
-				else 
-				{
-					isGraduationLine = y % _GraduationStep == 0;
-				}
+
+				isGraduationLine = x % _GraduationStep == 0 && distX <= GraduationMaxDistance;
+				isGraduationLine = isGraduationLine || (y % _GraduationStep == 0 && distY <= GraduationMaxDistance);
 
 				// Set the color depending on whether we're on a graduation or not
 				fixed4 col = isGraduationLine ? _GraduationColor :_GridColor;
