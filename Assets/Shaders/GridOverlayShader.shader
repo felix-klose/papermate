@@ -7,9 +7,12 @@ Shader "Unlit/GridOverlayShader"
 {
 	Properties
 	{
-	   _GridColor("Grid Color", Color) = (0.5, 1.0, 1.0)
-	   _GridScale("Grid Scale", Float) = 1.0
-	   _LineThickness("Line Thickness", Range(0.0001, 0.01)) = 0.005
+		_GridColor("Grid Color", Color) = (0.5, 1.0, 1.0)
+		_GraduationColor("Graduation Color", Color) = (0.5, 1.0, 1.0)
+		_GridScale("Grid Scale", Float) = .02
+		_GraduationStep("Graduation Step", Int) = 10
+		_GraduationScaleFactor("Graduation Scale Factor", Int) = 2
+		_LineThickness("Line Thickness", Float) = 1.0
 	}
 	SubShader
 	{
@@ -28,8 +31,11 @@ Shader "Unlit/GridOverlayShader"
 			#include "UnityCG.cginc"
 
 			uniform float4 _GridColor;
+			uniform float4 _GraduationColor;
 			uniform float _GridScale;
 			uniform float _LineThickness;
+			uniform int _GraduationStep;
+			uniform float _GraduationScaleFactor;
 
 			struct appdata
 			{
@@ -55,25 +61,50 @@ Shader "Unlit/GridOverlayShader"
 
 			fixed4 frag(v2f i) : SV_Target
 			{
+				// Get the distances to the next vertical gridlines
 				float xIndex = i.worldPos.x / _GridScale;
 				float x1 = floor(xIndex);
 				float x2 = ceil(xIndex);
 				float distX1 = abs(i.worldPos.x - x1 * _GridScale);
 				float distX2 = abs(i.worldPos.x - x2 * _GridScale);
 
+				// Get the distances to the next horizontal gridlines
 				float yIndex = i.worldPos.y / _GridScale;
 				float y1 = floor(yIndex);
 				float y2 = ceil(yIndex);
 				float distY1 = abs(i.worldPos.y - y1 * _GridScale);
 				float distY2 = abs(i.worldPos.y - y2 * _GridScale);
 
-				float minDist = min(distX1, distX2);
-				minDist = min(minDist, distY1);
-				minDist = min(minDist, distY2);
+				// Determine the minimum distance
+				float minDistX = min(distX1, distX2);
+				float minDistY = min(distY1, distY2);
+				float minDist = min(minDistX, minDistY);
 
-				fixed4 col = _GridColor;
+				// Check if we are on a graduation line
+				bool isGraduationLine = false;
+				if (minDistX <= minDistY && distX1 <= distX2)
+				{
+					isGraduationLine = x1 % _GraduationStep == 0;
+				}
+				else if (minDistX <= minDistY)
+				{
+					isGraduationLine = x2 % _GraduationStep == 0;
+				}
+				else if (minDistY < minDistX && distY1 <= distY2)
+				{
+					isGraduationLine = y1 % _GraduationStep == 0;
+				}
+				else 
+				{
+					isGraduationLine = y2 % _GraduationStep == 0;
+				}
 
-				col.a *= minDist < _LineThickness;
+				// Set the color depending on whether we're on a graduation or not
+				fixed4 col = isGraduationLine ? _GraduationColor :_GridColor;
+
+				// If the minimum distance is below the threshold, the pixel is visible.
+				// We multiply here to enable alpha values in the grid color parameter
+				col.a *= minDist < _LineThickness * (isGraduationLine * (_GraduationScaleFactor - 1) + 1);
 
 				return col;
 			}
