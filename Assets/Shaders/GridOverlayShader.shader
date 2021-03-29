@@ -61,42 +61,27 @@ Shader "Unlit/GridOverlayShader"
 
 			fixed4 frag(v2f i) : SV_Target
 			{
-				// Get the distances to the next vertical gridlines
 				float xIndex = i.worldPos.x / _GridScale;
-				float x1 = floor(xIndex);
-				float x2 = ceil(xIndex);
-				float distX1 = abs(i.worldPos.x - x1 * _GridScale);
-				float distX2 = abs(i.worldPos.x - x2 * _GridScale);
+				float x = floor(xIndex + 0.5);
+				float distX = abs(i.worldPos.x - x * _GridScale);
 
 				// Get the distances to the next horizontal gridlines
 				float yIndex = i.worldPos.y / _GridScale;
-				float y1 = floor(yIndex);
-				float y2 = ceil(yIndex);
-				float distY1 = abs(i.worldPos.y - y1 * _GridScale);
-				float distY2 = abs(i.worldPos.y - y2 * _GridScale);
+				float y = floor(yIndex + 0.5);
 
-				// Determine the minimum distance
-				float minDistX = min(distX1, distX2);
-				float minDistY = min(distY1, distY2);
-				float minDist = min(minDistX, minDistY);
+				float distY = abs(i.worldPos.y - y * _GridScale);
+
+				float minDist = min(distX, distY);
 
 				// Check if we are on a graduation line
 				bool isGraduationLine = false;
-				if (minDistX <= minDistY && distX1 <= distX2)
+				if (distX <= distY)
 				{
-					isGraduationLine = x1 % _GraduationStep == 0;
-				}
-				else if (minDistX <= minDistY)
-				{
-					isGraduationLine = x2 % _GraduationStep == 0;
-				}
-				else if (minDistY < minDistX && distY1 <= distY2)
-				{
-					isGraduationLine = y1 % _GraduationStep == 0;
+					isGraduationLine = x % _GraduationStep == 0;
 				}
 				else 
 				{
-					isGraduationLine = y2 % _GraduationStep == 0;
+					isGraduationLine = y % _GraduationStep == 0;
 				}
 
 				// Set the color depending on whether we're on a graduation or not
