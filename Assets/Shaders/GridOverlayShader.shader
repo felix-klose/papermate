@@ -73,7 +73,7 @@ Shader "Unlit/GridOverlayShader"
 
 				float minDist = min(distX, distY);
 
-				float GraduationMaxDistance = _LineThickness * _GraduationScaleFactor;
+				float GraduationMaxDistance = _LineThickness * _GraduationScaleFactor / 2.0;
 
 				// Check if we are on a graduation line
 				bool isGraduationLine = false;
@@ -86,7 +86,7 @@ Shader "Unlit/GridOverlayShader"
 
 				// If the minimum distance is below the threshold, the pixel is visible.
 				// We multiply here to enable alpha values in the grid color parameter
-				col.a *= minDist < _LineThickness * (isGraduationLine * (_GraduationScaleFactor - 1) + 1);
+				col.a *= minDist < (_LineThickness / 2.0) * (isGraduationLine * (_GraduationScaleFactor - 1) + 1);
 
 				return col;
 			}
