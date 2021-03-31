@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Papermate.MapView
 {
@@ -16,10 +17,13 @@ namespace Papermate.MapView
 
         new private Camera camera;
 
+        public UnityEvent OnZoomLevelChangedEvent = new UnityEvent();
+
         private void Awake()
         {
             camera = GetComponent<Camera>();
             PlayerInput.GetInstance().OnMouseDragEvent.AddListener(OnMouseDrag);
+            PlayerInput.GetInstance().OnMouseScrollEvent.AddListener(OnMouseScroll);
         }
 
         public void OnMouseDrag(Vector3 mousePositionDelta)
@@ -27,14 +31,15 @@ namespace Papermate.MapView
             transform.Translate(MouseDeltaToWorldDelta(mousePositionDelta) * movementSpeed);
         }
 
-        public void OnZoom(float zoomInput)
+        public void OnMouseScroll(float scrollInput)
         {
-            //float zoomInput = Input.GetAxis("Mouse ScrollWheel");
-            float newOrthoSize = camera.orthographicSize - zoomSpeed * zoomInput;
+            float newOrthoSize = camera.orthographicSize - zoomSpeed * scrollInput;
 
             newOrthoSize = Mathf.Clamp(newOrthoSize, minOrthographicSize, maxOrthographicSize);
 
             camera.orthographicSize = newOrthoSize;
+
+            OnZoomLevelChangedEvent.Invoke();
         }
 
         private Vector3 MouseDeltaToWorldDelta(Vector3 mouseDelta)

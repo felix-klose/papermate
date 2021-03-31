@@ -15,6 +15,7 @@ namespace Papermate.MapView
         private Vector3 lastMousePosition;
 
         public Vector3Event OnMouseDragEvent = new Vector3Event();
+        public FloatEvent OnMouseScrollEvent = new FloatEvent();
 
         public static PlayerInput GetInstance()
         {
@@ -62,6 +63,13 @@ namespace Papermate.MapView
                 } else if(Input.GetMouseButtonUp(0))
                 {
                     mouseDown = false;
+                }
+
+                if(!mouseDown)
+                {
+                    float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+                    if (scrollInput != 0.0f)
+                        OnMouseScrollEvent.Invoke(scrollInput);
                 }
             } 
             else
