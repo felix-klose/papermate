@@ -17,6 +17,8 @@ namespace Papermate.MapView
 
         new private Camera camera;
 
+        private Vector2 mapBounds;
+
         public UnityEvent OnZoomLevelChangedEvent = new UnityEvent();
 
         private void Awake()
@@ -24,11 +26,14 @@ namespace Papermate.MapView
             camera = GetComponent<Camera>();
             PlayerInput.GetInstance().OnMouseDragEvent.AddListener(OnMouseDrag);
             PlayerInput.GetInstance().OnMouseScrollEvent.AddListener(OnMouseScroll);
+            UpdateMaxOrthographicSize();
+            UpdateMapBounds();
         }
 
         public void OnMouseDrag(Vector3 mousePositionDelta)
         {
-            transform.Translate(MouseDeltaToWorldDelta(mousePositionDelta) * movementSpeed);
+            transform.position += MouseDeltaToWorldDelta(mousePositionDelta) * movementSpeed;
+            FixPosition();
         }
 
         public void OnMouseScroll(float scrollInput)
@@ -40,6 +45,9 @@ namespace Papermate.MapView
             camera.orthographicSize = newOrthoSize;
 
             OnZoomLevelChangedEvent.Invoke();
+
+            UpdateMapBounds();
+            FixPosition();
         }
 
         private Vector3 MouseDeltaToWorldDelta(Vector3 mouseDelta)
@@ -49,6 +57,38 @@ namespace Papermate.MapView
             float pixelsPerUnit = mainCamera.pixelHeight / viewPortUnits;
 
             return mouseDelta / pixelsPerUnit;
+        }
+
+        private void UpdateMapBounds()
+        {
+            Vector2 mapDimensions = MapManager.GetInstance().GetCurrentMapDimensions();
+
+            mapBounds = new Vector2(mapDimensions.x / 2f, mapDimensions.y / 2f);
+            float xOrthographicSize = camera.orthographicSize * camera.aspect;
+            mapBounds.x = Mathf.Max(mapBounds.x - xOrthographicSize, 0);
+            mapBounds.y = Mathf.Max(mapBounds.y - camera.orthographicSize, 0);
+        }
+
+        private void UpdateMaxOrthographicSize()
+        {
+            Vector2 mapDimensions = MapManager.GetInstance().GetCurrentMapDimensions();
+            float mapAspect = mapDimensions.x / mapDimensions.y;
+
+            float yOrthographicSize = mapDimensions.y / 2f;
+            float xAdjustedOrthographicSize = (mapDimensions.x / mapAspect) / 2f;
+
+            maxOrthographicSize = Mathf.Max(xAdjustedOrthographicSize, yOrthographicSize);
+        }
+
+        private void FixPosition()
+        {
+            Vector3 targetPosition = transform.position;
+
+            targetPosition.x = Mathf.Clamp(targetPosition.x, -mapBounds.x, mapBounds.x);
+            targetPosition.y = Mathf.Clamp(targetPosition.y, -mapBounds.y, mapBounds.y);
+            targetPosition.z = transform.position.z;
+
+            transform.position = targetPosition;
         }
     }
 

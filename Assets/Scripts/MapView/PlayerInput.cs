@@ -55,7 +55,7 @@ namespace Papermate.MapView
                 }
                 else if (Input.GetMouseButton(0) && mouseDown)
                 {
-                    Vector3 mousePositionDelta = curMousePosition - lastMousePosition;
+                    Vector3 mousePositionDelta = lastMousePosition - curMousePosition;
 
                     OnMouseDragEvent.Invoke(mousePositionDelta);
 
