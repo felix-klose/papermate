@@ -1,12 +1,24 @@
+/*
+ * This file is part of Papermate which is released under <license>.
+ * See file <file> for full license details.
+ */
+
 Shader "Unlit/GridOverlayShader"
 {
 	Properties
 	{
+		// Color of the grid lines
 		_GridColor("Grid Color", Color) = (0.5, 1.0, 1.0)
+		// Color of the graduation grid lines
 		_GraduationColor("Graduation Color", Color) = (0.5, 1.0, 1.0)
-		_GridScale("Grid Scale", Float) = .02
+		// Distance in meters between each grid line
+		_GridScale("Grid Scale", Float) = 1
+		// For a _GraduationStep of n, each nth line is a graduation line
 		_GraduationStep("Graduation Step", Int) = 10
+		// Line thickness factor for graduation lines
 		_GraduationScaleFactor("Graduation Scale Factor", Int) = 2
+		// Thickness of grid lines in meters. To control thickness on a pixel-level,
+		// this property has to be updated from an outside script
 		_LineThickness("Line Thickness", Float) = 1.0
 	}
 	SubShader
@@ -25,6 +37,7 @@ Shader "Unlit/GridOverlayShader"
 			#pragma multi_compile _ UNITY_SINGLE_PASS_STEREO STEREO_INSTANCING_ON STEREO_MULTIVIEW_ON
 			#include "UnityCG.cginc"
 
+			/* For details, check the Properties section */
 			uniform float4 _GridColor;
 			uniform float4 _GraduationColor;
 			uniform float _GridScale;
@@ -32,18 +45,21 @@ Shader "Unlit/GridOverlayShader"
 			uniform int _GraduationStep;
 			uniform float _GraduationScaleFactor;
 
+			// Input data for vertex function
 			struct appdata
 			{
-			float4 vertex : POSITION;
+			float4 vertex : POSITION; // Local space position
 			};
 
+			// Intermediate result data. Returned by vertex function and consumed by fragment function
 			struct v2f
 			{
-			float4 vertex : SV_POSITION;
-			float3 worldPos : TEXCOORD0;
+			float4 vertex : SV_POSITION; // Clip position
+			float3 worldPos : TEXCOORD0; // World space position
 			UNITY_VERTEX_OUTPUT_STEREO
 			};
 
+			// Vertex function, precalculates parameters for fragment function
 			v2f vert(appdata v)
 			{
 				v2f o;
@@ -54,6 +70,7 @@ Shader "Unlit/GridOverlayShader"
 				return o;
 			}
 
+			// Fragment function, calculates pixel color
 			fixed4 frag(v2f i) : SV_Target
 			{
 				float xIndex = i.worldPos.x / _GridScale;

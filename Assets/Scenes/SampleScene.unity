@@ -394,6 +394,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5608600558461896713, guid: 3332b9a9f77f2f144926fb0ab9129ffa, type: 3}
+      propertyPath: graduationStep
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5608600558461896713, guid: 3332b9a9f77f2f144926fb0ab9129ffa, type: 3}
+      propertyPath: graduationColor.g
+      value: 0.5019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 5608600558461896713, guid: 3332b9a9f77f2f144926fb0ab9129ffa, type: 3}
+      propertyPath: graduationColor.r
+      value: 0.5686275
+      objectReference: {fileID: 0}
+    - target: {fileID: 5608600558461896713, guid: 3332b9a9f77f2f144926fb0ab9129ffa, type: 3}
+      propertyPath: graduationScaleFactor
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5608600560301076601, guid: 3332b9a9f77f2f144926fb0ab9129ffa, type: 3}
       propertyPath: m_Name
       value: Main Camera
