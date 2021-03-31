@@ -1,6 +1,6 @@
 /*
- * This file is part of Papermate which is released under <license>.
- * See file <file> for full license details.
+ * This file is part of Papermate which is released under Apache License 2.0.
+ * See file LICENSE.txt for full license details.
  */
 
 Shader "Unlit/GridOverlayShader"
