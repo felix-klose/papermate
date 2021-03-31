@@ -12,8 +12,6 @@ namespace Papermate.MapView
         private float zoomSpeed = 1;
         [SerializeField]
         private float minOrthographicSize = 3;
-        [SerializeField]
-        private float maxOrthographicSize = 10;
 
         new private Camera camera;
 
@@ -24,19 +22,21 @@ namespace Papermate.MapView
         private void Awake()
         {
             camera = GetComponent<Camera>();
-            PlayerInput.GetInstance().OnMouseDragEvent.AddListener(OnMouseDrag);
-            PlayerInput.GetInstance().OnMouseScrollEvent.AddListener(OnMouseScroll);
-            UpdateMaxOrthographicSize();
-            UpdateMapBounds();
+            PlayerInput.GetInstance().OnDragEvent.AddListener(OnDrag);
+            PlayerInput.GetInstance().OnZoomEvent.AddListener(OnZoom);
+
+            MapManager.GetInstance().OnCurrentMapChanged.AddListener(UpdateControlConstraints);
+
+            UpdateControlConstraints();
         }
 
-        public void OnMouseDrag(Vector3 mousePositionDelta)
+        public void OnDrag(Vector3 mousePositionDelta)
         {
             transform.position += MouseDeltaToWorldDelta(mousePositionDelta) * movementSpeed;
             FixPosition();
         }
 
-        public void OnMouseScroll(float scrollInput)
+        public void OnZoom(float scrollInput)
         {
             float newOrthoSize = camera.orthographicSize - zoomSpeed * scrollInput;
 
@@ -57,6 +57,12 @@ namespace Papermate.MapView
             float pixelsPerUnit = mainCamera.pixelHeight / viewPortUnits;
 
             return mouseDelta / pixelsPerUnit;
+        }
+
+        private void UpdateControlConstraints()
+        {
+            UpdateMaxOrthographicSize();
+            UpdateMapBounds();
         }
 
         private void UpdateMapBounds()

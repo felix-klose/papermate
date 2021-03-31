@@ -14,8 +14,8 @@ namespace Papermate.MapView
 
         private Vector3 lastMousePosition;
 
-        public Vector3Event OnMouseDragEvent = new Vector3Event();
-        public FloatEvent OnMouseScrollEvent = new FloatEvent();
+        public Vector3Event OnDragEvent = new Vector3Event();
+        public FloatEvent OnZoomEvent = new FloatEvent();
 
         public static PlayerInput GetInstance()
         {
@@ -57,7 +57,7 @@ namespace Papermate.MapView
                 {
                     Vector3 mousePositionDelta = lastMousePosition - curMousePosition;
 
-                    OnMouseDragEvent.Invoke(mousePositionDelta);
+                    OnDragEvent.Invoke(mousePositionDelta);
 
                     lastMousePosition = curMousePosition;
                 } else if(Input.GetMouseButtonUp(0))
@@ -69,7 +69,7 @@ namespace Papermate.MapView
                 {
                     float scrollInput = Input.GetAxis("Mouse ScrollWheel");
                     if (scrollInput != 0.0f)
-                        OnMouseScrollEvent.Invoke(scrollInput);
+                        OnZoomEvent.Invoke(scrollInput);
                 }
             } 
             else

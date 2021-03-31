@@ -11,7 +11,13 @@ namespace Papermate.MapView
         private void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
+            UpdateMapProperties();
 
+            MapManager.GetInstance().OnCurrentMapChanged.AddListener(UpdateMapProperties);
+        }
+
+        private void UpdateMapProperties()
+        {
             Vector2 mapDimensions = MapManager.GetInstance().GetCurrentMapDimensions();
             Texture2D mapTexture = MapManager.GetInstance().GetCurrentMapTexture();
 
