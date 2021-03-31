@@ -4,9 +4,9 @@ using Papermate.Events;
 
 namespace Papermate.MapView
 {
-    public class MapViewInput : MonoBehaviour
+    public class PlayerInput : MonoBehaviour
     {
-        private static MapViewInput instance;
+        private static PlayerInput instance;
 
         private Camera mainCamera;
         private bool gameInputEnabled;
@@ -16,14 +16,14 @@ namespace Papermate.MapView
 
         public Vector3Event OnMouseDragEvent = new Vector3Event();
 
-        public static MapViewInput GetInstance()
+        public static PlayerInput GetInstance()
         {
             return instance;
         }
 
-        private static void SetInstance(MapViewInput instance)
+        private static void SetInstance(PlayerInput instance)
         {
-            MapViewInput.instance = instance;
+            PlayerInput.instance = instance;
         }
 
         private void Awake()
