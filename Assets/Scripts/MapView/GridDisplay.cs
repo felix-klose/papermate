@@ -9,8 +9,6 @@ namespace Papermate.MapView
         private CameraController targetCameraController;
         [SerializeField]
         private float gridLinePixelWidth = 5;
-        [SerializeField]
-        private float zIndex = -1;
 
         new private MeshRenderer renderer;
         private Camera targetCamera;
