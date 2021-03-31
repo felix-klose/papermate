@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1384076528181520713}
   - component: {fileID: 1384076528181520714}
+  - component: {fileID: 1546934681}
   m_Layer: 0
   m_Name: GameManagement
   m_TagString: Untagged
@@ -43,3 +44,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1858f2a0cf84354eb2aade7f4c4727a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1546934681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1384076528181520715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc56f6b448dcc894b8563be660f8de98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultMapTexture: {fileID: 2800000, guid: a80749a3a9b304448bc8beaa324b138a, type: 3}
+  defaultMapDimensions: {x: 32, y: -1}
+  OnCurrentMapChanged:
+    m_PersistentCalls:
+      m_Calls: []

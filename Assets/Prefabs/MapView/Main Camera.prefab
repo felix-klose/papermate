@@ -110,8 +110,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCameraController: {fileID: 5608600560301076603}
+  gridColor: {r: 0.5, g: 1, b: 1, a: 1}
+  graduationColor: {r: 0.5686275, g: 0.5019608, b: 1, a: 1}
+  gridScale: 1
+  graduationStep: 5
+  graduationScaleFactor: 3
   gridLinePixelWidth: 3
-  zIndex: -1
 --- !u!1 &5608600560301076601
 GameObject:
   m_ObjectHideFlags: 0
@@ -209,10 +213,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a347b64f0ecaf9b44b07023073202be8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 1
   zoomSpeed: 1
   minOrthographicSize: 3
-  maxOrthographicSize: 10
   OnZoomLevelChangedEvent:
     m_PersistentCalls:
       m_Calls: []
