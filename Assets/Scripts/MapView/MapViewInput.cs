@@ -1,24 +1,29 @@
 using UnityEngine;
 
-namespace Papermate.Game
+using Papermate.Events;
+
+namespace Papermate.MapView
 {
-    public class GameInput : MonoBehaviour
+    public class MapViewInput : MonoBehaviour
     {
-        private static GameInput instance;
+        private static MapViewInput instance;
 
         private Camera mainCamera;
         private bool gameInputEnabled;
+        private bool mouseDown;
 
         private Vector3 lastMousePosition;
 
-        public GameInput GetInstance()
+        public Vector3Event OnMouseDragEvent = new Vector3Event();
+
+        public static MapViewInput GetInstance()
         {
             return instance;
         }
 
-        private static void SetInstance(GameInput instance)
+        private static void SetInstance(MapViewInput instance)
         {
-            GameInput.instance = instance;
+            MapViewInput.instance = instance;
         }
 
         private void Awake()
@@ -31,6 +36,7 @@ namespace Papermate.Game
             {
                 mainCamera = Camera.main;
                 gameInputEnabled = true;
+                mouseDown = false;
                 SetInstance(this);
             }
         }
@@ -44,15 +50,23 @@ namespace Papermate.Game
                 if (Input.GetMouseButtonDown(0))
                 {
                     lastMousePosition = curMousePosition;
+                    mouseDown = true;
                 }
-                else if (Input.GetMouseButton(0))
+                else if (Input.GetMouseButton(0) && mouseDown)
                 {
                     Vector3 mousePositionDelta = curMousePosition - lastMousePosition;
 
-                    // OnMapDragEvent.Invoke(mousePositionDelta);
+                    OnMouseDragEvent.Invoke(mousePositionDelta);
 
                     lastMousePosition = curMousePosition;
+                } else if(Input.GetMouseButtonUp(0))
+                {
+                    mouseDown = false;
                 }
+            } 
+            else
+            {
+                mouseDown = false;
             }
         }
 

@@ -1,6 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
+using Papermate.MapView;
 
 [RequireComponent(typeof(Camera))]
 public class CameraController : MonoBehaviour
@@ -14,29 +14,22 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     private float maxOrthographicSize = 10;
 
-    private Vector3 lastMousePosition;
     new private Camera camera;
 
     private void Awake()
     {
         camera = GetComponent<Camera>();
+        MapViewInput.GetInstance().OnMouseDragEvent.AddListener(OnMouseDrag);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnMouseDrag(Vector3 mousePositionDelta)
     {
-        if(Input.GetMouseButtonDown(0))
-        {
-            lastMousePosition = Input.mousePosition;
-        } else if(Input.GetMouseButton(0))
-        {
-            Vector3 deltaMousePosition = lastMousePosition - Input.mousePosition;
-            lastMousePosition = Input.mousePosition;
+        transform.Translate(MouseDeltaToWorldDelta(mousePositionDelta) * movementSpeed);
+    }
 
-            transform.Translate(MouseDeltaToWorldDelta(deltaMousePosition) * movementSpeed);
-        }
-
-        float zoomInput = Input.GetAxis("Mouse ScrollWheel");
+    public void OnZoom(float zoomInput)
+    {
+        //float zoomInput = Input.GetAxis("Mouse ScrollWheel");
         float newOrthoSize = camera.orthographicSize - zoomSpeed * zoomInput;
 
         newOrthoSize = Mathf.Clamp(newOrthoSize, minOrthographicSize, maxOrthographicSize);
